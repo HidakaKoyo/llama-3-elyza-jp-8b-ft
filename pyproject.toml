@@ -1,0 +1,7 @@
+[project]
+name = "llama-3-elyza-jp-8b-ft"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9.10"
+dependencies = []
