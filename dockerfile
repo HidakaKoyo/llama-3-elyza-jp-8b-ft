@@ -17,7 +17,5 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 # 4) 必要なライブラリもインストール
 RUN pip install torch transformers peft accelerate bitsandbytes datasets pandas
 
-# スクリプトをコピー
-COPY train.py /workspace/train.py
-
-CMD ["/bin/bash"]
+# 5) ソースコードをコピー
+COPY . /app
