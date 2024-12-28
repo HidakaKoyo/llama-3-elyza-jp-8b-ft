@@ -172,11 +172,39 @@ def main():
 
     # NOTE: ----- 6. 学習開始 -----
     logger.info("Starting training...")
+
+    # === ここから追加 ===
+    # 全体実行時間計測用（CPU側）
     start_time = time.time()
+
+    # GPU 実行時間計測用: torch.cuda.Event
+    gpu_start, gpu_end = None, None
+    if torch.cuda.is_available():
+        gpu_start = torch.cuda.Event(enable_timing=True)
+        gpu_end = torch.cuda.Event(enable_timing=True)
+        gpu_start.record()
+    # === ここまで追加 ===
+
     trainer.train()
+
+    # === ここから追加 ===
+    # GPU 実行時間計測の終了
+    gpu_time_sec = None
+    if gpu_end is not None:
+        gpu_end.record()
+        torch.cuda.synchronize()
+        gpu_time_ms = gpu_start.elapsed_time(gpu_end)
+        gpu_time_sec = gpu_time_ms / 1000.0
+
     end_time = time.time()
     total_train_time = end_time - start_time
-    logger.info(f"Training complete. Elapsed time: {total_train_time:.2f} seconds")
+    logger.info(
+        f"Training complete. Elapsed total time: {total_train_time:.2f} seconds"
+    )
+
+    if gpu_time_sec is not None:
+        logger.info(f"Training complete. Elapsed GPU time: {gpu_time_sec:.2f} seconds")
+    # === ここまで追加 ===
 
     # NOTE: ----- 7. 学習結果の保存 -----
     if args.save_lora_only:
