@@ -1,38 +1,23 @@
-# (例) nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04 をベースにする
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
-# 必要ライブラリのインストール
+# 1) システムパッケージを更新し、Python3 & pip をインストール
 RUN apt-get update && apt-get install -y \
-  git \
-  wget \
+  python3 \
+  python3-distutils \
   curl \
-  python3.10 \
-  python3.10-distutils \
-  vim \
-  && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-# pip インストール
+# 2) pip のインストール
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-RUN python3.10 get-pip.py
+RUN python3 get-pip.py
 
-# 必要 Python パッケージのインストール
-RUN pip install --no-cache-dir \
-  torch \
-  transformers \
-  datasets \
-  peft \
-  accelerate \
-  bitsandbytes \
-  sentencepiece \
-  # 以下は便利ツール
-  pandas \
-  jupyter
+# 3) python コマンドを python3 にリンクする（必要であれば）
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# コンテナ内の作業ディレクトリ
-WORKDIR /workspace
+# 4) 必要なライブラリもインストール
+RUN pip install torch transformers peft accelerate bitsandbytes datasets pandas
 
-# スクリプトやデータを追加
-# ADD ./train.py /workspace
+# スクリプトをコピー
+COPY train.py /workspace/train.py
 
 CMD ["/bin/bash"]
