@@ -6,15 +6,15 @@ RUN apt-get update && apt-get install -y \
   git \
   wget \
   curl \
-  python3.9 \
-  python3.9-distutils \
+  python3.10 \
+  python3.10-distutils \
   vim \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
 # pip インストール
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-RUN python3.9 get-pip.py
+RUN python3.10 get-pip.py
 
 # 必要 Python パッケージのインストール
 RUN pip install --no-cache-dir \
