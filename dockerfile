@@ -11,11 +11,17 @@ RUN apt-get update && apt-get install -y \
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python3 get-pip.py
 
-# 3) python コマンドを python3 にリンクする（必要であれば）
+# 3) python コマンドを python3 にリンク
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# 4) 必要なライブラリもインストール
+# 4) 必要なライブラリをインストール
 RUN pip install torch transformers peft accelerate bitsandbytes datasets pandas
 
 # 5) ソースコードをコピー
 COPY . /app
+
+# 6) 作業ディレクトリを /app に設定
+WORKDIR /app
+
+# CMD でデフォルトの実行コマンドを指定しておく例
+# CMD ["python", "workspace/train.py", "--output_dir", "/opt/artifact", "--num_train_epochs", "2", "--batch_size", "2"]
