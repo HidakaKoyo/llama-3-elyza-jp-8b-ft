@@ -118,6 +118,14 @@ def main():
         device_map="auto",
     )
 
+    # NOTE: pad_token がない場合に登録する
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens({"pad_token": tokenizer.eos_token})
+
+    model.config.pad_token_id = tokenizer.pad_token_id
+
+    model.resize_token_embeddings(len(tokenizer))
+
     # NOTE: ----- 3. LoRA設定 -----
     lora_config = LoraConfig(
         r=8,
