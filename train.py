@@ -99,7 +99,7 @@ def main():
     data_list = []
     for idx, row in df.iterrows():
         instruction_text = str(row["question"])
-        answer_text = str(row["answer"])
+        answer_text = str(row["answers"])
         data_list.append(
             {"instruction": instruction_text, "input": "", "output": answer_text}
         )
