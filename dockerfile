@@ -15,7 +15,7 @@ RUN python3 get-pip.py
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # 4) 必要なライブラリをインストール
-RUN pip install torch transformers peft accelerate bitsandbytes datasets pandas
+RUN pip install torch transformers peft accelerate bitsandbytes datasets pandas pynvml
 
 # 5) ソースコードをコピー
 COPY . /app
