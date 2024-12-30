@@ -10,6 +10,7 @@ import torch
 from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
+    BitsAndBytesConfig,
     TrainingArguments,
     Trainer,
     TrainerCallback,
@@ -118,11 +119,16 @@ def main():
     model_name = args.model_name
     logger.info(f"Loading tokenizer and base model: {model_name}")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+    bnb_config = BitsAndBytesConfig(
+        load_in_8bit=True,
+    )
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
+        quantization_config=bnb_config,  # v4.31+ のtransformersでは quantization_config
         torch_dtype="auto",
         device_map="auto",
     )
+    model = prepare_model_for_kbit_training(model)
 
     # NOTE: pad_token がない場合に登録する
     if tokenizer.pad_token is None:
