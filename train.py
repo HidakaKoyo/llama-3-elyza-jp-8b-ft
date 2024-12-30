@@ -144,7 +144,7 @@ def main():
         targets = [out for out in examples["output"]]
         model_inputs = [s + t for s, t in zip(sources, targets)]
         tokenized = tokenizer(
-            model_inputs, max_length=512, padding="max_length", truncation=True
+            model_inputs, max_length=256, padding="max_length", truncation=True
         )
         tokenized["labels"] = tokenized["input_ids"].copy()
         return tokenized
@@ -167,6 +167,7 @@ def main():
         learning_rate=args.learning_rate,
         optim="adamw_torch",
         report_to="none",
+        gradient_checkpointing=True,
     )
 
     trainer = Trainer(
