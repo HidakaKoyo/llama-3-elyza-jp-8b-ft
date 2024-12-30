@@ -15,7 +15,13 @@ from transformers import (
     TrainerCallback,
 )
 from datasets import Dataset
-from peft import LoraConfig, get_peft_model, TaskType, PeftModel
+from peft import (
+    LoraConfig,
+    get_peft_model,
+    TaskType,
+    PeftModel,
+    prepare_model_for_kbit_training,
+)
 
 try:
     from pynvml import (
@@ -137,6 +143,10 @@ def main():
     )
     model = get_peft_model(model, lora_config)
     logger.info("LoRA model ready.")
+
+    # gradient checkpointing と LoRA + 量子化モデルを併用する場合は use_cache=False が必要
+    # ただし Trainer の実行時に自動で use_cache=False に変更されるときもある
+    model.config.use_cache = False
 
     # NOTE: ----- 4. データのトークナイズ -----
     def tokenize_fn(examples):
